@@ -1,9 +1,14 @@
+import sys
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+sys.path.insert(1, os.getenv('PATH_ROOT'))
 import math
 import re
 from urllib.parse import urlparse
 from socket import gethostbyname
 import pandas as pd
-
 
 def levenshtein_distance_string(str1, str2):
     str1 = str(str1).lower()
@@ -35,11 +40,12 @@ class LexicalURLFeature:
         self.description = 'blah'
         self.url = url
         self.domain = self.extract_domain()
+        self.tld = self.extract_tld()
         self.url_parse = urlparse(self.url)
         self.dict_word = self.load_dict_word()
-        
+
     def load_dict_word(self):
-        file_path = "main/featureURL/dict_check_type.xlsx"
+        file_path = "ProjectClassificationDomain/domain_feature/dict_check_type.xlsx"
         try:
             df = pd.read_excel(file_path)
             return dict(zip(df['word'].tolist(), df['type'].tolist()))
@@ -47,8 +53,14 @@ class LexicalURLFeature:
             print(f"Error loading dictionary: {e}")
             return {}
 
+        
     def extract_domain(self):
         return self.url.split('.')[0]
+
+    def extract_tld(self):
+        parts = self.url.split(' ', 1)  # Split the string at the first dot
+        result = parts[1] if len(parts) > 1 else ''
+        return result
 
     def get_entropy(self):
         probs = [self.domain.count(c) / len(self.domain)
@@ -73,7 +85,7 @@ class LexicalURLFeature:
         regex = r'[!@#$%^&*()_+\-=\[\]{};\'\\:"|<,/<>?]'
         special_characters = re.findall(regex, self.domain)
         return len(special_characters)
-
+    
     def get_type_url(self):
         # if it have the blank like: unews vn -> get unews
         if " " in self.domain:

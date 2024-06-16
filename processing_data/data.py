@@ -5,7 +5,7 @@ import time
 start_time = time.time()
 
 
-path = 'main/processing_data/dataset_70K.csv'
+path = 'ProjectClassificationDomain/processing_data/33k_URL_VNNIC_CLD.csv'
 df = pd.read_csv(path)
 urls = df.iloc[:, 0].tolist()
 labels = df.iloc[:,1].tolist()

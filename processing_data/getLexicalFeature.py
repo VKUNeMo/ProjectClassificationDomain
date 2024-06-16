@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 sys.path.insert(1, os.getenv('PATH_ROOT'))
-from ProjectClassificationDomain.domain_feature.lexical_feature import *
+from domain_feature.lexical_feature import *
 
 
 def getLexicalInputNN(url):
